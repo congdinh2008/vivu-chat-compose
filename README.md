@@ -254,7 +254,103 @@ cd src/server
 java -jar target/*.jar --spring.profiles.active=dev
 ```
 
-## Environment Variables
+## Spring Core Java-based Configuration
+
+This application implements Spring Core Java-based Configuration as per SRS guidelines, providing manual control over Spring Context initialization and bean management.
+
+### Configuration Architecture
+
+#### AppConfig.java
+The main configuration class (`com.congdinh.vivuchat.config.AppConfig`) provides:
+
+- **@Configuration**: Marks this class as a source of bean definitions
+- **@ComponentScan**: Scans for Spring components in the base package
+- **@PropertySource**: Loads database configuration from `database.properties`
+- **@EnableTransactionManagement**: Enables annotation-driven transaction management
+
+#### Key Beans Configured:
+
+1. **DataSource Bean**
+   - Uses HikariCP connection pool for optimal performance
+   - Configures PostgreSQL database connection
+   - Includes connection pool settings (max pool size, timeouts, etc.)
+
+2. **SessionFactory Bean**
+   - Hibernate SessionFactory for ORM operations
+   - Configures entity scanning for `com.congdinh.vivuchat.entities`
+   - Sets up Hibernate properties for SQL dialect, DDL mode, etc.
+
+3. **PlatformTransactionManager Bean**
+   - HibernateTransactionManager for transaction management
+   - Supports declarative transactions with `@Transactional` annotation
+   - Ensures ACID properties for database operations
+
+### Configuration Files
+
+#### database.properties
+Contains all database-related configuration:
+
+```properties
+# Database Connection
+db.driver=org.postgresql.Driver
+db.url=jdbc:postgresql://localhost:5432/vivuchat_dev
+db.username=postgres
+db.password=postgres
+
+# HikariCP Connection Pool
+db.hikari.connection-timeout=20000
+db.hikari.maximum-pool-size=5
+db.hikari.minimum-idle=2
+
+# Hibernate Configuration
+hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+hibernate.hbm2ddl.auto=update
+hibernate.show_sql=true
+hibernate.format_sql=true
+```
+
+### Manual Spring Context Loading
+
+The application follows SRS guidelines by manually loading Spring Context in the main method:
+
+```java
+// Traditional Spring Context loading approach as per SRS guidelines
+ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+```
+
+This approach provides:
+- **Explicit Control**: Manual control over Spring Context initialization
+- **Configuration Transparency**: Clear visibility into bean creation and wiring
+- **SRS Compliance**: Follows Software Requirements Specification guidelines
+- **Flexibility**: Easy to modify or extend configuration as needed
+
+### Transaction Management
+
+Transaction management is handled through:
+- `@EnableTransactionManagement` annotation in AppConfig
+- `@Transactional` annotation on service methods
+- HibernateTransactionManager for coordinating database transactions
+
+### Running with Java-based Configuration
+
+When you start the application, you'll see logs indicating:
+
+1. Manual Spring Context loading
+2. Bean creation and initialization
+3. Database connection establishment
+4. Transaction manager setup
+
+```bash
+cd src/server
+
+# Run using Maven
+./mvnw spring-boot:run
+
+# Package as JAR
+./mvnw package
+
+# Run with specific profile
+java -jar target/*.jar --spring.profiles.active=dev
 
 ### Frontend Environment
 
