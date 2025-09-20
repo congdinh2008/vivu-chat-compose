@@ -33,6 +33,7 @@ class AppConfigTest {
         System.out.println("✓ @EnableTransactionManagement present");
         System.out.println("✓ @ComponentScan present");
         System.out.println("✓ @PropertySource present");
+        System.out.println("All required Spring Core Java-based Configuration annotations are present");
     }
 
     @Test 

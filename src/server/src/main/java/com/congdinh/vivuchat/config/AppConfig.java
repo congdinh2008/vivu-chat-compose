@@ -20,6 +20,7 @@ import java.util.Properties;
 /**
  * Spring Core Java-based Configuration class
  * Configures DataSource, SessionFactory, and Transaction Management
+ * Includes component scanning for Spring services and repositories
  */
 @Configuration
 @EnableTransactionManagement
